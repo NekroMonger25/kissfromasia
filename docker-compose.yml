@@ -11,13 +11,9 @@ services:
     environment:
       - VPN_SERVICE_PROVIDER=protonvpn
       - VPN_TYPE=openvpn
-      - OPENVPN_USER=${OPENVPN_USERNAME}
-      - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
-      - SERVER_COUNTRIES=Italy,Germany,Netherlands,Switzerland
-      - OPENVPN_PROTOCOL=udp
-      - OPENVPN_VERBOSITY=1
-      - OPENVPN_ROOT=no
-      - HEALTH_CHECK_URL=https://www.google.com
+      - OPENVPN_USER=${OPENVPN_USERNAME:-}
+      - OPENVPN_PASSWORD=${OPENVPN_PASSWORD:-}
+      - SERVER_COUNTRIES=Italy,Germany,Netherlands,Switzerland,Sweden,Poland,France,Spain,Austria,Belgium,Czech Republic,Denmark,Finland,Norway
       - TZ=Europe/Rome
     ports:
       - "3000:3000"
@@ -25,6 +21,12 @@ services:
     restart: unless-stopped
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=1
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:9999"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
 
   flaresolverr:
     image: flaresolverr/flaresolverr:latest
@@ -42,10 +44,11 @@ services:
       - no-new-privileges:true
     network_mode: "service:vpn"
     depends_on:
-      - vpn
+      vpn:
+        condition: service_healthy
 
   kisskh-addon:
-    image: kisskh-addon:latest
+    build: .
     container_name: kisskh-addon
     volumes:
       - ./cache:/app/cache
@@ -53,9 +56,16 @@ services:
       - FLARESOLVERR_URL=http://localhost:8191
       - FLARESOLVERR_ENABLED=true
       - PORT=3000
-      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - GITHUB_TOKEN=${GITHUB_TOKEN:-}
+      - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=false
+      - PUPPETEER_EXECUTABLE_PATH=
+      - PUPPETEER_ARGS=--no-sandbox --disable-setuid-sandbox --disable-dev-shm-usage --disable-accelerated-2d-canvas --no-first-run --no-zygote --disable-gpu --hide-scrollbars --mute-audio
+      - NODE_ENV=production
+      - TZ=Europe/Rome
     depends_on:
-      - vpn
-      - flaresolverr
+      vpn:
+        condition: service_healthy
+      flaresolverr:
+        condition: service_started
     restart: unless-stopped
     network_mode: "service:vpn"
