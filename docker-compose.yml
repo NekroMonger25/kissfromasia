@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   vpn:
     image: qmcgaw/gluetun:latest
@@ -11,7 +13,11 @@ services:
       - VPN_TYPE=openvpn
       - OPENVPN_USER=${OPENVPN_USERNAME}
       - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
-      - SERVER_COUNTRIES=Italy,Germany,Netherlands,Switzerland,Sweden,Poland,France,Spain,Austria,Belgium,Czech Republic,Denmark,Finland,Norway
+      - SERVER_COUNTRIES=Italy,Germany,Netherlands,Switzerland
+      - OPENVPN_PROTOCOL=udp
+      - OPENVPN_VERBOSITY=1
+      - OPENVPN_ROOT=no
+      - HEALTH_CHECK_URL=https://www.google.com
       - TZ=Europe/Rome
     ports:
       - "3000:3000"
