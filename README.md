@@ -66,35 +66,54 @@ docker-compose up -d
 
 - Docker & Docker Compose
 - Account ProtonVPN (gratuito supportato)
-- 2GB RAM minimi
+- Token GitHub per sottotitoli gist
+- 2GB RAM minimi | 0.5 CPU core
 - Privilegi NET_ADMIN per VPN
+- 500MB storage per Chromium
 
-## 🔧 Configurazione Avanzata
+## 📄 Esempio docker-compose.yml Completo
 
-### Variabili d'Ambiente
+```yaml
+version: '3'
+services:
+  vpn:
+    image: qmcgaw/gluetun
+    container_name: kisskh-vpn
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - VPN_SERVICE_PROVIDER=protonvpn
+      - OPENVPN_USERNAME=${OPENVPN_USERNAME}
+      - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
+      - SERVER_COUNTRIES=Germany,Netherlands,Switzerland,Sweden
+    volumes:
+      - ./gluetun:/gluetun
+    restart: unless-stopped
 
-| Variabile | Descrizione | Default |
-|-----------|-------------|---------|
-| `OPENVPN_USERNAME` | Username ProtonVPN | **Richiesto** |
-| `OPENVPN_PASSWORD` | Password ProtonVPN | **Richiesto** |
-| `ADDON_PORT` | Porta addon | `3000` |
-| `FLARESOLVERR_PORT` | Porta FlareSolverr | `8191` |
+  flaresolverr:
+    image: flaresolverr/flaresolverr:latest
+    container_name: kisskh-flaresolverr
+    network_mode: "service:vpn"
+    environment:
+      - BROWSER_TIMEOUT=120000
+    depends_on:
+      - vpn
+    restart: unless-stopped
 
-### Stack Completo
-
-L'addon include:
-- **VPN Container**: Gluetun con ProtonVPN
-- **FlareSolverr**: Bypass Cloudflare via browser headless
-- **KissKH Addon**: Server Node.js con dual bypass
-- **Networking**: Tutto il traffico passa attraverso VPN
-
-## 🎬 Uso con Stremio
-
-1. Aggiungi addon: `http://localhost:3000/manifest.json`
-2. Cerca contenuti asiatici dalla home di Stremio  
-3. Sottotitoli italiani caricati automaticamente
-4. Supporta ricerca per titolo e ID TMDB/IMDB
+  addon:
+    build: .
+    container_name: kisskh-addon
+    network_mode: "service:vpn"
+    environment:
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - FLARESOLVERR_URL=http://localhost:8191
+    depends_on:
+      - vpn
+      - flaresolverr
+    restart: unless-stopped
+```
 
 ---
 
-**Versione 1.3.6** - VPN-ready con rotazione geografica automatica
+**🎭 KissKH Stremio Addon v1.3.6**  
+*VPN-ready con rotazione geografica automatica per contenuti asiatici*
