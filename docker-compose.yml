@@ -18,12 +18,7 @@ services:
     restart: unless-stopped
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=1
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:9999"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
+    
   flaresolverr:
     image: flaresolverr/flaresolverr:latest
     container_name: flaresolverr
@@ -40,10 +35,7 @@ services:
     cap_add:
       - SYS_ADMIN
     network_mode: "service:vpn"
-    depends_on:
-      vpn:
-        condition: service_healthy
-
+    
   kisskh-addon:
     build: .
     container_name: kissfromasia
