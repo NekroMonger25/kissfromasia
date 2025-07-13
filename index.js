@@ -67,6 +67,10 @@ async function checkCacheFolder() {
     }
 }
 
+console.log('**************************************************');
+console.log('*** AVVIO DELLA VERSIONE MODIFICATA DI INDEX.JS ***');
+console.log('**************************************************');
+
 const options = {
     port: process.env.PORT || 3000,
      // MODIFICA: Forza l'ascolto su tutte le interfacce di rete.
