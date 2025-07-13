@@ -83,6 +83,21 @@ const options = {
 
 // Funzione di inizializzazione asincrona
 async function initServer() {
+    let options = {};
+    try {
+        // Carica la configurazione dal percorso non conflittuale.
+        // Questo è il modo corretto per far leggere all'addon 'host: 0.0.0.0'.
+        options = require('./config/server.js');
+        console.log('[Config] Configurazione esterna caricata con successo da /app/config/server.js');
+    } catch (e) {
+        console.error('[Config] ERRORE: Impossibile caricare il file di configurazione. Assicurarsi che sia montato correttamente.', e.message);
+        // Fallback a opzioni di base, che però si legheranno a 127.0.0.1
+        options = {
+            port: process.env.PORT || 3000,
+            logger: { log: (msg) => console.log(`[Stremio] ${msg}`), error: (msg) => console.error(`[Stremio] ${msg}`) }
+        };
+    }
+
     try {
         // Verifica la cartella cache prima di avviare il server
         await checkCacheFolder();
@@ -90,10 +105,5 @@ async function initServer() {
         // Avvia il server usando serveHTTP di Stremio
         serveHTTP(addonInterface, options);
     } catch (error) {
-        console.error('[Server] Errore durante l\'inizializzazione:', error);
-        process.exit(1);
-    }
-}
-
 // Avvia il server
 initServer();
