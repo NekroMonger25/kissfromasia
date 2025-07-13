@@ -67,22 +67,38 @@ async function checkCacheFolder() {
     }
 }
 
-const options = {
-    port: process.env.PORT || 3000,
-     host: '0.0.0.0',
-    logger: {
-        log: (msg) => console.log(`[Stremio] ${msg}`),
-        error: (msg) => console.error(`[Stremio] ${msg}`)
     }
-};
+}
+
+// MODIFICA CHIAVE: Carica la configurazione da un file esterno se esiste.
+// Questo è l'approccio più robusto e risolve il problema del binding a 127.0.0.1.
+let options = {};
+const configPath = './server-config.js';
+
+try {
+    options = require(configPath);
+    console.log(`[Config] File di configurazione esterno caricato con successo da: ${configPath}`);
+} catch (e) {
+    console.warn(`[Config] File di configurazione non trovato in ${configPath}. Uso le opzioni di default.`);
+    // Opzioni di default se il file non esiste
+    options = {
+        port: process.env.PORT || 3000,
+        logger: { log: (msg) => console.log(`[Stremio] ${msg}`), error: (msg) => console.error(`[Stremio] ${msg}`) }
+    };
+}
 
 // Funzione di inizializzazione asincrona
 async function initServer() {
     try {
         // Verifica la cartella cache prima di avviare il server
         await checkCacheFolder();
-
         // Avvia il server usando serveHTTP di Stremio
+        serveHTTP(addonInterface, options);
+    } catch (error) {
+
+
+
+       // Avvia il server usando serveHTTP di Stremio
         serveHTTP(addonInterface, options);
     } catch (error) {
         console.error('[Server] Errore durante l\'inizializzazione:', error);
