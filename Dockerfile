@@ -36,6 +36,12 @@ RUN chmod 755 subtitles
 # Copia il resto dei file
 COPY . .
 
+# --- DIAGNOSI ---
+# Stampa il contenuto di index.js per verificare che sia la versione corretta.
+RUN echo "=============== INIZIO CONTENUTO index.js ===============" && \
+    cat index.js && \
+    echo "================ FINE CONTENUTO index.js ================"
+
 # Cambia proprietario dei file
 RUN chown -R node:node .
 
