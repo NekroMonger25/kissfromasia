@@ -69,6 +69,7 @@ async function checkCacheFolder() {
 
 const options = {
     port: process.env.PORT || 3000,
+     host: '0.0.0.0',
     logger: {
         log: (msg) => console.log(`[Stremio] ${msg}`),
         error: (msg) => console.error(`[Stremio] ${msg}`)
