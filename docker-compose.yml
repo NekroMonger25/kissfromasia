@@ -17,6 +17,7 @@ services:
       - OPENVPN_ROOT=no
       - HEALTH_CHECK_URL=https://www.google.com
       - TZ=Europe/Rome
+      - FIREWALL_VPN_INPUT_PORTS=3000,8191
     ports:
       - "3000:3000"
       - "8191:8191"
@@ -33,9 +34,7 @@ services:
       - LOG_LEVEL=info
       - LOG_HTML=false
       - CAPTCHA_SOLVER=hcaptcha-solver
-      - HEADLESS=true
       - BROWSER_TIMEOUT=120000
-      - TEST_URL=https://www.google.com
       - TZ=Europe/Rome
     restart: unless-stopped
     security_opt:
@@ -43,7 +42,7 @@ services:
     network_mode: "service:vpn"
     depends_on:
       - vpn
-    
+
   kisskh-addon:
     build: .
     container_name: kisskh-addon
@@ -53,13 +52,11 @@ services:
       - FLARESOLVERR_URL=http://localhost:8191
       - FLARESOLVERR_ENABLED=true
       - PORT=3000
-      - HOST=0.0.0.0
       - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - TZ=Europe/Rome
       - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=false
-      - PUPPETEER_EXECUTABLE_PATH=
       - PUPPETEER_ARGS=--no-sandbox --disable-setuid-sandbox --disable-dev-shm-usage --disable-accelerated-2d-canvas --no-first-run --no-zygote --disable-gpu --hide-scrollbars --mute-audio
       - NODE_ENV=production
-      - TZ=Europe/Rome
     depends_on:
       - vpn
       - flaresolverr
@@ -68,4 +65,4 @@ services:
 
 networks:
   npm_proxy:
-    driver: bridge
+    external: true
