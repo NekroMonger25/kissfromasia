@@ -69,6 +69,8 @@ async function checkCacheFolder() {
 
 const options = {
     port: process.env.PORT || 3000,
+     // MODIFICA: Forza l'ascolto su tutte le interfacce di rete.
+    host: '0.0.0.0',
     logger: {
         log: (msg) => console.log(`[Stremio] ${msg}`),
         error: (msg) => console.error(`[Stremio] ${msg}`)
