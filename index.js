@@ -67,36 +67,16 @@ async function checkCacheFolder() {
     }
 }
 
-console.log('**************************************************');
-console.log('*** AVVIO DELLA VERSIONE MODIFICATA DI INDEX.JS ***');
-console.log('**************************************************');
-
+const options = {
+    port: process.env.PORT || 3000,
+    logger: {
+        log: (msg) => console.log(`[Stremio] ${msg}`),
+        error: (msg) => console.error(`[Stremio] ${msg}`)
     }
-}
+};
 
 // Funzione di inizializzazione asincrona
 async function initServer() {
-    let options = {};
-    const configPath = './config/server.js'; // Percorso sicuro e non conflittuale
-
-    try {
-        // Carica la configurazione dal percorso non conflittuale.
-        // Questo è il modo corretto per far leggere all'addon 'host: 0.0.0.0'.
-        options = require(configPath);
-        console.log(`[Config] Configurazione esterna caricata con successo da ${configPath}`);
-    } catch (e) {
-        console.error(`[Config] ERRORE: Impossibile caricare il file di configurazione da ${configPath}. Assicurarsi che sia montato correttamente. Usando opzioni di default.`, e.message);
-        // Fallback a opzioni di base, che si legheranno a 127.0.0.1
-        options = {
-            port: process.env.PORT || 3000,
-            host: '127.0.0.1',
-            logger: { 
-                log: (msg) => console.log(`[Stremio] ${msg}`), 
-                error: (msg) => console.error(`[Stremio] ${msg}`) 
-            }
-        };
-    }
-
     try {
         // Verifica la cartella cache prima di avviare il server
         await checkCacheFolder();
