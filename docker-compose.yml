@@ -48,14 +48,15 @@ services:
     container_name: kisskh-addon
     volumes:
       - ./cache:/app/cache
+      - ./server-config.js:/app/server-config.js
     environment:
       - FLARESOLVERR_URL=http://localhost:8191
       - FLARESOLVERR_ENABLED=true
       - PORT=3000
-      - HOST=0.0.0.0
       - GITHUB_TOKEN=${GITHUB_TOKEN}
       - TZ=Europe/Rome
-      - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=false
+      - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+      - PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
       - PUPPETEER_ARGS=--no-sandbox --disable-setuid-sandbox --disable-dev-shm-usage --disable-accelerated-2d-canvas --no-first-run --no-zygote --disable-gpu --hide-scrollbars --mute-audio
       - NODE_ENV=production
     depends_on:
