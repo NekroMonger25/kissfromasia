@@ -23,7 +23,9 @@ services:
     restart: unless-stopped
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=1
-   
+    networks:
+      - npm_proxy
+
   flaresolverr:
     image: flaresolverr/flaresolverr:latest
     container_name: kisskh-flaresolverr
@@ -41,7 +43,7 @@ services:
     network_mode: "service:vpn"
     depends_on:
       - vpn
-   
+    
   kisskh-addon:
     build: .
     container_name: kisskh-addon
@@ -62,6 +64,7 @@ services:
       - flaresolverr
     restart: unless-stopped
     network_mode: "service:vpn"
+
 networks:
   npm_proxy:
     driver: bridge
