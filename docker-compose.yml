@@ -53,6 +53,7 @@ services:
       - FLARESOLVERR_URL=http://localhost:8191
       - FLARESOLVERR_ENABLED=true
       - PORT=3000
+      - HOST=0.0.0.0
       - GITHUB_TOKEN=${GITHUB_TOKEN}
       - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=false
       - PUPPETEER_EXECUTABLE_PATH=
