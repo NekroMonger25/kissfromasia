@@ -21,7 +21,7 @@ services:
       - DOT_PROVIDERS=cloudflare
       - PROTONVPN_PLAN=free
       - FIREWALL_INPUT_PORTS=3000
-    ports:
+      ports:
       - "3000:3000"
       restart: unless-stopped
     sysctls:
