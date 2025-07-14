@@ -48,7 +48,6 @@ services:
       - NODE_ENV=production
     depends_on:
       - vpn
-      - flaresolverr
     restart: unless-stopped
     network_mode: "service:vpn"
 
