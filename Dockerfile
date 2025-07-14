@@ -24,10 +24,10 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
 WORKDIR /app
 RUN mkdir -p subtitles && chown -R node:node subtitles
 
+COPY ./server-config.js /app/server-config.js
+
 # Copia package.json e package-lock.json
 COPY package*.json ./
-
-COPY server-config.js /app/server-config.js
 
 # Installa dipendenze in modalità produzione
 RUN npm ci --only=production
