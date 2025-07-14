@@ -1,5 +1,5 @@
 services:
-  vpn:
+  - vpn:
     image: qmcgaw/gluetun:latest
     container_name: kisskh-vpn
     cap_add:
