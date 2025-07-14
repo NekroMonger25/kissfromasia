@@ -70,7 +70,7 @@ async function checkCacheFolder() {
 // MODIFICA CHIAVE: Carica la configurazione da un file esterno se esiste.
 // Questo è l'approccio più robusto e risolve il problema del binding a 127.0.0.1.
 let options = {};
-const configPath = './server-config.js';
+const configPath = './app/server-config.js';
 
 try {
     options = require(configPath);
