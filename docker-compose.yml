@@ -1,12 +1,14 @@
+version: '3.8'
+
 services:
-  - vpn:
+  vpn:
     image: qmcgaw/gluetun:latest
     container_name: kisskh-vpn
     cap_add:
       - NET_ADMIN
     devices:
       - /dev/net/tun:/dev/net/tun
-    - environment:
+    environment:
       - VPN_SERVICE_PROVIDER=protonvpn
       - VPN_TYPE=openvpn
       - OPENVPN_USER=${OPENVPN_USERNAME}
@@ -21,9 +23,9 @@ services:
       - DOT_PROVIDERS=cloudflare
       - PROTONVPN_PLAN=free
       - FIREWALL_INPUT_PORTS=3000
-      ports:
+    ports:
       - "3000:3000"
-      restart: unless-stopped
+    restart: unless-stopped
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=1
     networks:
@@ -37,6 +39,8 @@ services:
     volumes:
       - ./cache:/app/cache
     environment:
+      - FLARESOLVERR_URL=http://localhost:8191
+      - FLARESOLVERR_ENABLED=false
       - PORT=3000
       - GITHUB_TOKEN=${GITHUB_TOKEN}
       - TZ=Europe/Rome
@@ -46,6 +50,7 @@ services:
       - NODE_ENV=production
     depends_on:
       - vpn
+      - flaresolverr
     restart: unless-stopped
     network_mode: "service:vpn"
 
