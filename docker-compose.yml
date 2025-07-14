@@ -17,7 +17,10 @@ services:
       - OPENVPN_ROOT=no
       - HEALTH_CHECK_URL=https://www.google.com
       - TZ=Europe/Rome
-      - FIREWALL_VPN_INPUT_PORTS=3000,8191
+      - DOT=on
+      - DOT_PROVIDERS=cloudflare
+      - PROTONVPN_PLAN=free
+      - FIREWALL_INPUT_PORTS=3000,8191
     ports:
       - "3000:3000"
       - "8191:8191"
@@ -46,7 +49,7 @@ services:
   kisskh-addon:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.custom
     container_name: kisskh-addon
     volumes:
       - ./cache:/app/cache
