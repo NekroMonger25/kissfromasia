@@ -29,6 +29,7 @@ if (!process.env.GITHUB_TOKEN) {
 const { serveHTTP } = require('stremio-addon-sdk');
 const addonInterface = require('./api/stremio');
 const path = require('path');
+const http = require('http'); // Importa il modulo HTTP standard
 const fs = require('fs').promises;
 
 // Funzione per verificare la cartella cache
@@ -77,9 +78,9 @@ try {
     console.log(`[Config] File di configurazione esterno caricato con successo da: ${configPath}`);
 } catch (e) {
     console.warn(`[Config] File di configurazione non trovato in ${configPath}. Uso le opzioni di default.`);
-    // Opzioni di default se il file non esiste
     options = {
         port: process.env.PORT || 3000,
+        host: '127.0.0.1', // Fallback sicuro se non c'è config
         logger: { 
             log: (msg) => console.log(`[Stremio] ${msg}`), 
             error: (msg) => console.error(`[Stremio] ${msg}`) 
@@ -92,8 +93,18 @@ async function initServer() {
     try {
         // Verifica la cartella cache prima di avviare il server
         await checkCacheFolder();
-        // Avvia il server usando serveHTTP di Stremio con le opzioni caricate
-        serveHTTP(addonInterface, options);
+
+        // Ottiene il gestore delle richieste dalla libreria Stremio
+        const handler = serveHTTP(addonInterface, { port: options.port });
+
+        // Crea un nostro server HTTP per avere il pieno controllo su host e porta
+        const server = http.createServer(handler);
+
+        // Avvia il server sull'host e sulla porta specificati nel nostro file di configurazione
+        server.listen(options.port, options.host, () => {
+            console.log(`[Server] Addon avviato e in ascolto su http://${options.host}:${options.port}`);
+        });
+
     } catch (error) {
         console.error('[Server] Errore durante l\'inizializzazione:', error);
         process.exit(1);
