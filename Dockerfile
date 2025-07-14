@@ -24,7 +24,7 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
 WORKDIR /app
 RUN mkdir -p subtitles && chown -R node:node subtitles
 
-COPY ./server-config.js /app/server-config.js
+COPY server-config.js /app/server-config.js
 
 # Copia package.json e package-lock.json
 COPY package*.json ./
