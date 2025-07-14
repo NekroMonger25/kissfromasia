@@ -48,7 +48,7 @@ services:
     container_name: kisskh-addon
     volumes:
       - ./cache:/app/cache
-      - ./server-config.js:./app/server-config.js
+      - ./server-config.js:/app/server-config.js
     environment:
       - FLARESOLVERR_URL=http://localhost:8191
       - FLARESOLVERR_ENABLED=true
