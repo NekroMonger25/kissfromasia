@@ -95,7 +95,8 @@ async function initServer() {
         await checkCacheFolder();
 
         // Ottiene il gestore delle richieste dalla libreria Stremio
-        const handler = serveHTTP(addonInterface, { port: options.port });
+        // SENZA OPZIONI: così la libreria non avvia il suo server e ci dà solo la logica.
+        const handler = serveHTTP(addonInterface);
 
         // Crea un nostro server HTTP per avere il pieno controllo su host e porta
         const server = http.createServer(handler);
