@@ -5,9 +5,6 @@ node_modules
 npm-debug.log
 .env
 
-# Ignora i file di configurazione che vengono montati come volumi
-server-config.js
-
 # Ignora la cache e i file di controllo versione
 cache
 .git
