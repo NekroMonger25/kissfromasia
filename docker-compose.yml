@@ -44,7 +44,9 @@ services:
       - vpn
 
   kisskh-addon:
-    build: .
+     build:
+      context: .
+      dockerfile: Dockerfile
     container_name: kisskh-addon
     volumes:
       - ./cache:/app/cache
