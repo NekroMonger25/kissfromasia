@@ -27,6 +27,8 @@ RUN mkdir -p subtitles && chown -R node:node subtitles
 # Copia package.json e package-lock.json
 COPY package*.json ./
 
+COPY server-config.js ./
+
 # Installa dipendenze in modalità produzione
 RUN npm ci --only=production
 
