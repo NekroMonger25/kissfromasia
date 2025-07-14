@@ -26,7 +26,7 @@ if (!process.env.GITHUB_TOKEN) {
     console.error('[GitHub] Per configurare, crea un token su https://github.com/settings/tokens e impostalo come variabile d\'ambiente GITHUB_TOKEN');
 }
 
-const { serveHTTP } = require('stremio-addon-sdk');
+const { getRouter } = require('stremio-addon-sdk'); // Usa getRouter per ottenere solo la logica
 const addonInterface = require('./api/stremio');
 const path = require('path');
 const http = require('http'); // Importa il modulo HTTP standard
@@ -94,14 +94,14 @@ async function initServer() {
         // Verifica la cartella cache prima di avviare il server
         await checkCacheFolder();
 
-        // Ottiene il gestore delle richieste dalla libreria Stremio
-        // SENZA OPZIONI: così la libreria non avvia il suo server e ci dà solo la logica.
-        const handler = serveHTTP(addonInterface);
+        // Usa getRouter per ottenere solo la logica, senza avviare un server.
+        // Questo è il modo corretto per evitare il server "fantasma" su 127.0.0.1.
+        const router = getRouter(addonInterface);
 
         // Crea un nostro server HTTP per avere il pieno controllo su host e porta
-        const server = http.createServer(handler);
+        const server = http.createServer(router);
 
-        // Avvia il server sull'host e sulla porta specificati nel nostro file di configurazione
+        // Avvia il nostro server sull'host e sulla porta specificati nel file di configurazione
         server.listen(options.port, options.host, () => {
             console.log(`[Server] Addon avviato e in ascolto su http://${options.host}:${options.port}`);
         });
