@@ -20,31 +20,14 @@ services:
       - DOT=on
       - DOT_PROVIDERS=cloudflare
       - PROTONVPN_PLAN=free
-      - FIREWALL_INPUT_PORTS=3000,8191
+      - FIREWALL_INPUT_PORTS=3000
     ports:
       - "3000:3000"
-      - "8191:8191"
-    restart: unless-stopped
+      restart: unless-stopped
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=1
     networks:
       - npm_proxy
-
-  flaresolverr:
-    image: flaresolverr/flaresolverr:latest
-    container_name: kisskh-flaresolverr
-    environment:
-      - LOG_LEVEL=info
-      - LOG_HTML=false
-      - CAPTCHA_SOLVER=hcaptcha-solver
-      - BROWSER_TIMEOUT=120000
-      - TZ=Europe/Rome
-    restart: unless-stopped
-    security_opt:
-      - no-new-privileges:true
-    network_mode: "service:vpn"
-    depends_on:
-      - vpn
 
   kisskh-addon:
     build:
@@ -54,8 +37,6 @@ services:
     volumes:
       - ./cache:/app/cache
     environment:
-      - FLARESOLVERR_URL=http://localhost:8191
-      - FLARESOLVERR_ENABLED=true
       - PORT=3000
       - GITHUB_TOKEN=${GITHUB_TOKEN}
       - TZ=Europe/Rome
@@ -65,7 +46,6 @@ services:
       - NODE_ENV=production
     depends_on:
       - vpn
-      - flaresolverr
     restart: unless-stopped
     network_mode: "service:vpn"
 
