@@ -49,7 +49,7 @@ services:
   kisskh-addon:
     build:
       context: .
-      dockerfile: Dockerfile.custom
+      dockerfile: Dockerfile
     container_name: kisskh-addon
     volumes:
       - ./cache:/app/cache
