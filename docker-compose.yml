@@ -47,9 +47,9 @@ services:
     network_mode: "service:vpn"
     depends_on:
       - vpn
-  # networks rimosso: non compatibile con network_mode
 
 networks:
   proxy-net:
     external: true
+
 
