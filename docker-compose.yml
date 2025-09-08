@@ -9,7 +9,7 @@ services:
       - VPN_SERVICE_PROVIDER=protonvpn
       - OPENVPN_USERNAME=${OPENVPN_USERNAME}
       - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
-      - SERVER_COUNTRIES=Germany,Netherlands,Switzerland,Sweden
+      - SERVER_COUNTRIES=Italy
     volumes:
       - ./gluetun:/gluetun
     restart: unless-stopped
@@ -23,3 +23,4 @@ services:
     depends_on:
       - vpn
     restart: unless-stopped
+
