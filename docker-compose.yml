@@ -14,7 +14,7 @@ services:
       - OPENVPN_USER=${OPENVPN_USERNAME}
       - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
       - SERVER_COUNTRIES=Italy
-      - OPENVPN_PROTOCOL=udp
+      - OPENVPN_PROTOCOL=tcp
       - OPENVPN_VERBOSITY=1
       - OPENVPN_ROOT=no
       - HEALTH_CHECK_URL=https://www.google.com
@@ -51,5 +51,6 @@ services:
 networks:
   proxy-net:
     external: true
+
 
 
