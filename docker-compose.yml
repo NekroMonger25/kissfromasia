@@ -29,7 +29,7 @@ services:
 
   kisskh-addon:
     build:
-      context: https://github.com/NekroMonger25/kissfromasia.git
+      context: ./kissfromasia
       dockerfile: Dockerfile
     container_name: kisskh-addon
     volumes:
@@ -52,3 +52,4 @@ services:
 networks:
   proxy-net:
     external: true
+
