@@ -17,9 +17,6 @@ WORKDIR /app/kissfromasia
 # Installa le dipendenze
 RUN npm install --production
 
-# Copia eventuali file locali (es. cache)
-COPY ./cache ./cache
-
 # Espone la porta
 EXPOSE 3000
 
@@ -30,3 +27,4 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
 
 # Avvia l'addon
 CMD ["node", "index.js"]
+
