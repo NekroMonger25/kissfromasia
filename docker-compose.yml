@@ -1,26 +1,53 @@
-version: '3'
+version: '3.8'
+
 services:
   vpn:
-    image: qmcgaw/gluetun
+    image: qmcgaw/gluetun:latest
     container_name: kisskh-vpn
     cap_add:
       - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
     environment:
       - VPN_SERVICE_PROVIDER=protonvpn
-      - OPENVPN_USERNAME=${OPENVPN_USERNAME}
+      - VPN_TYPE=openvpn
+      - OPENVPN_USER=${OPENVPN_USERNAME}
       - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
       - SERVER_COUNTRIES=Italy
-    volumes:
-      - ./gluetun:/gluetun
+      - OPENVPN_PROTOCOL=udp
+      - OPENVPN_VERBOSITY=1
+      - OPENVPN_ROOT=no
+      - HEALTH_CHECK_URL=https://www.google.com
+      - TZ=Europe/Rome
+    ports:
+      - "3000:3000"
     restart: unless-stopped
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=1
+    networks:
+      - proxy-net
 
-  addon:
-    build: .
+  kisskh-addon:
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: kisskh-addon
-    network_mode: "service:vpn"
+    volumes:
+      - ./cache:/app/cache
     environment:
-      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      FLARESOLVERR_ENABLED: "false"
+      PORT: 3000
+      GITHUB_TOKEN: ${GITHUB_TOKEN}
+      TZ: Europe/Rome
+      PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: "true"
+      PUPPETEER_EXECUTABLE_PATH: /usr/bin/chromium
+      PUPPETEER_ARGS: --no-sandbox --disable-setuid-sandbox --disable-dev-shm-usage --disable-accelerated-2d-canvas --no-first-run --no-zygote --disable-gpu --hide-scrollbars --mute-audio
+      NODE_ENV: production
+    restart: unless-stopped
+    # network_mode rimosso: entrambi i servizi sono solo nella stessa network
     depends_on:
       - vpn
-    restart: unless-stopped
 
+networks:
+  proxy-net:
+    external: true
