@@ -24,7 +24,7 @@ services:
     restart: unless-stopped
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=1
-  network_mode: "container:kisskh-vpn"
+
 
   kisskh-addon:
     build:
@@ -42,9 +42,9 @@ services:
       PUPPETEER_ARGS: --no-sandbox --disable-setuid-sandbox --disable-dev-shm-usage --disable-accelerated-2d-canvas --no-first-run --no-zygote --disable-gpu --hide-scrollbars --mute-audio
       NODE_ENV: production
     restart: unless-stopped
-    # network_mode rimosso: entrambi i servizi sono solo nella stessa network
     depends_on:
       - vpn
+  network_mode: "container:kisskh-vpn"
 
 networks:
   proxy-net:
