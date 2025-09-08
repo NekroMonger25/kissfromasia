@@ -24,8 +24,7 @@ services:
     restart: unless-stopped
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=1
-    networks:
-      - proxy-net
+  network_mode: "container:kisskh-vpn"
 
   kisskh-addon:
     build:
@@ -35,7 +34,6 @@ services:
     volumes:
       - ./cache:/app/cache
     environment:
-      FLARESOLVERR_ENABLED: "false"
       PORT: 3000
       GITHUB_TOKEN: ${GITHUB_TOKEN}
       TZ: Europe/Rome
