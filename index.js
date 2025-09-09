@@ -1,4 +1,4 @@
-const { getRouter } = require('stremio-addon-sdk');
+const { serveHTTP } = require('stremio-addon-sdk');
 const addonInterface = require('./api/stremio');
 const path = require('path');
 const fs = require('fs').promises;
@@ -33,51 +33,15 @@ if (process.env.ENABLE_GARBAGE_COLLECTION === 'true') {
   }
 }
 
-// Carica la configurazione da un file esterno se esiste, altrimenti fallback su variabili d'ambiente o default
-let options = {};
-const configPath = './server-config.js';
-try {
-  options = require(configPath);
-  console.log(`[Config] File di configurazione esterno caricato con successo da: ${configPath}`);
-} catch (e) {
-  console.warn(`[Config] File di configurazione non trovato in ${configPath}. Uso le opzioni di default.`);
-  options = {
-    port: process.env.PORT || 3000,
-    host: process.env.HOST || '0.0.0.0',
-    logger: {
-      log: (msg) => console.log(`[Stremio] ${msg}`),
-      error: (msg) => console.error(`[Stremio] ${msg}`)
-    }
-  };
-}
 
-const http = require('http');
+// Forza la porta desiderata (default 3000) per serveHTTP
+process.env.PORT = process.env.PORT || '3000';
 
-// Funzione di inizializzazione asincrona
-async function initServer() {
-  try {
-    // Verifica la cartella cache prima di avviare il server
-    await checkCacheFolder();
+// Avvia la funzione di verifica cache
+checkCacheFolder();
 
-    // Usa getRouter per ottenere solo la logica, senza avviare un server.
-    const router = getRouter(addonInterface);
-
-    // Crea un nostro server HTTP per avere il pieno controllo su host e porta
-    const server = http.createServer(router);
-
-    // Avvia il nostro server sull'host e sulla porta specificati nel file di configurazione
-    server.listen(options.port, options.host, () => {
-      console.log(`[Server] Addon avviato e in ascolto su http://${options.host}:${options.port}`);
-    });
-
-  } catch (error) {
-    console.error('[Server] Errore durante l\'inizializzazione:', error);
-    process.exit(1);
-  }
-}
-
-// Avvia il server
-initServer();
+// Avvia l'addon Stremio sulla porta specificata
+serveHTTP(addonInterface);
 
 // Funzione per verificare la cartella cache
 async function checkCacheFolder() {
