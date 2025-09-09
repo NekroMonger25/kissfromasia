@@ -1,39 +1,16 @@
 version: '3.8'
 
 services:
-  vpn:
-    image: qmcgaw/gluetun:latest
-    container_name: kisskh-vpn
-    cap_add:
-      - NET_ADMIN
-    devices:
-      - /dev/net/tun:/dev/net/tun
-    environment:
-      - VPN_SERVICE_PROVIDER=protonvpn
-      - VPN_TYPE=openvpn
-      - OPENVPN_USER=${OPENVPN_USERNAME}
-      - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
-      - SERVER_COUNTRIES=Italy
-      - OPENVPN_PROTOCOL=udp
-      - OPENVPN_VERBOSITY=1
-      - OPENVPN_ROOT=no
-      - HEALTH_CHECK_URL=https://www.google.com
-      - TZ=Europe/Rome
-    ports:
-      - "3000:3000"
-    restart: unless-stopped
-    sysctls:
-      - net.ipv6.conf.all.disable_ipv6=1
-
 
   kisskh-addon:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile # Usiamo il Dockerfile principale e corretto
     container_name: kisskh-addon
     volumes:
       - ./cache:/app/cache
     environment:
+      FLARESOLVERR_ENABLED: "false" # Disabilitato per il test
       PORT: 3000
       GITHUB_TOKEN: ${GITHUB_TOKEN}
       TZ: Europe/Rome
@@ -42,10 +19,10 @@ services:
       PUPPETEER_ARGS: --no-sandbox --disable-setuid-sandbox --disable-dev-shm-usage --disable-accelerated-2d-canvas --no-first-run --no-zygote --disable-gpu --hide-scrollbars --mute-audio
       NODE_ENV: production
     restart: unless-stopped
-    depends_on:
-      - vpn
-    network_mode: "container:kisskh-vpn"
+    
+    networks:
+      - proxy-net
 
 networks:
-  proxy-net:
+  npm_proxy:
     external: true
