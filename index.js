@@ -1,3 +1,5 @@
+process.env.PORT = process.env.PORT || '3000';
+
 const { serveHTTP } = require('stremio-addon-sdk');
 const addonInterface = require('./api/stremio');
 const path = require('path');
@@ -32,10 +34,6 @@ if (process.env.ENABLE_GARBAGE_COLLECTION === 'true') {
     console.warn('[Memory] Impossibile abilitare la garbage collection manuale:', e.message);
   }
 }
-
-
-// Forza la porta desiderata (default 3000) per serveHTTP
-process.env.PORT = process.env.PORT || '3000';
 
 // Avvia la funzione di verifica cache
 checkCacheFolder();
