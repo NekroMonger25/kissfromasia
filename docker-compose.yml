@@ -7,6 +7,8 @@ services:
       context: .
       dockerfile: Dockerfile # Usiamo il Dockerfile principale e corretto
     container_name: kisskh-addon
+    ports: 
+      - 3000:3000
     volumes:
       - ./cache:/app/cache
     environment:
@@ -26,4 +28,5 @@ services:
 networks:
   proxy-net:
     external: true
+
 
